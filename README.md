@@ -60,11 +60,24 @@ in `src/data/site.ts` and add it to the contact page.
 
 ## Deploying
 
-The build is fully static (`dist/`). Any of these work with zero configuration:
+The build is fully static, so there is no server to run. Deployed on **Cloudflare Pages**, connected
+to this GitHub repo — every push to `main` triggers a build.
 
-- **Netlify / Vercel / Cloudflare Pages** — connect the repo, build command `npm run build`,
-  publish directory `dist`.
-- **GitHub Pages** — push `dist/` via an action, or use `withastro/action`.
+Build settings:
+
+| Setting | Value |
+| --- | --- |
+| Framework preset | Astro |
+| Build command | `npm run build` |
+| Build output directory | `dist` |
+| Node version | from `.nvmrc` (22) |
+
+Astro 7 needs Node >= 22.12, which is why `.nvmrc` is committed — without it Cloudflare may pick an
+older default and the build fails.
+
+To add a custom domain later: Cloudflare Pages → the project → *Custom domains*. Then update `site`
+in `astro.config.mjs` and the `Sitemap:` line in `public/robots.txt` to match, or the sitemap and
+RSS feed will keep pointing at the old URL.
 
 ## Structure
 
