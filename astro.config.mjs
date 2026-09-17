@@ -5,7 +5,7 @@ import sitemap from '@astrojs/sitemap';
 // NOTE: change `site` to your real domain before deploying — it is used for
 // canonical URLs, the sitemap, RSS and Open Graph tags.
 export default defineConfig({
-  site: 'https://poladibrahimov.com',
+  site: 'https://poladibrahim.github.io',
   integrations: [sitemap()],
   markdown: {
     shikiConfig: {

@@ -60,24 +60,19 @@ in `src/data/site.ts` and add it to the contact page.
 
 ## Deploying
 
-The build is fully static, so there is no server to run. Deployed on **Cloudflare Pages**, connected
-to this GitHub repo — every push to `main` triggers a build.
+Deployed to **GitHub Pages** at <https://poladibrahim.github.io>. The repo is a GitHub *user site*
+(`poladibrahim.github.io`), so it is served from the root path and needs no `base` in the Astro
+config.
 
-Build settings:
+`.github/workflows/deploy.yml` builds and deploys on every push to `main`. Nothing to run by hand —
+the workflow pins Node 22 because Astro 7 needs >= 22.12 and the runner default may be older.
 
-| Setting | Value |
-| --- | --- |
-| Framework preset | Astro |
-| Build command | `npm run build` |
-| Build output directory | `dist` |
-| Node version | from `.nvmrc` (22) |
+Repository **Settings -> Pages -> Source** must be set to **GitHub Actions** (not "Deploy from a
+branch"), or the workflow uploads an artifact that nothing publishes.
 
-Astro 7 needs Node >= 22.12, which is why `.nvmrc` is committed — without it Cloudflare may pick an
-older default and the build fails.
-
-To add a custom domain later: Cloudflare Pages → the project → *Custom domains*. Then update `site`
-in `astro.config.mjs` and the `Sitemap:` line in `public/robots.txt` to match, or the sitemap and
-RSS feed will keep pointing at the old URL.
+To move to a custom domain later: add it under Settings -> Pages, then update `site` in
+`astro.config.mjs` and the `Sitemap:` line in `public/robots.txt`, or the sitemap and RSS feed will
+keep advertising the old URL.
 
 ## Structure
 
