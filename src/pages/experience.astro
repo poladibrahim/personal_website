@@ -1,0 +1,147 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHeader from '../components/PageHeader.astro';
+import Timeline from '../components/Timeline.astro';
+import Icon from '../components/Icon.astro';
+import { profile, experience, research, education } from '../data/site';
+---
+
+<Base
+  title="Experience"
+  description="Roles, research and education — nearly three years of production AI/ML work at Azerbaijan's National AI Center, now an MSc at the University of Bonn."
+>
+  <div class="wrap wrap--narrow">
+    <PageHeader
+      eyebrow="Experience"
+      title="Where I've worked"
+      lead="Nearly three years of production AI/ML work at Azerbaijan's National AI Center, plus the research and studies around it."
+    >
+      <a class="btn btn--primary head-cta" href={profile.resume} target="_blank" rel="noopener">
+        <Icon name="doc" size={16} /> Download résumé
+      </a>
+    </PageHeader>
+
+    <section class="section" aria-labelledby="roles">
+      <div class="section__head">
+        <h2 class="section__title" id="roles">Professional experience</h2>
+      </div>
+      <Timeline items={experience} />
+    </section>
+
+    <section class="section" aria-labelledby="research">
+      <div class="section__head">
+        <h2 class="section__title" id="research">Research</h2>
+      </div>
+      <Timeline items={research} />
+    </section>
+
+    <section class="section" aria-labelledby="education">
+      <div class="section__head">
+        <h2 class="section__title" id="education">Education</h2>
+      </div>
+      <ol class="edu">
+        {
+          education.map((item) => (
+            <li class="edu__item">
+              <div class="edu__when">
+                {item.start} — {item.end}
+              </div>
+              <div class="edu__body">
+                <h3 class="edu__degree">{item.degree}</h3>
+                <p class="edu__school">
+                  {item.school}
+                  {item.location && <span> · {item.location}</span>}
+                </p>
+                {item.notes && (
+                  <ul class="edu__notes">
+                    {item.notes.map((note) => (
+                      <li>{note}</li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .head-cta {
+    margin-top: 1.5rem;
+  }
+
+  .edu {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 1.75rem;
+  }
+
+  .edu__item {
+    display: grid;
+    grid-template-columns: 10.5rem 1fr;
+    gap: 1.5rem;
+  }
+
+  .edu__when {
+    font-family: var(--font-code);
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    padding-top: 0.25rem;
+    white-space: nowrap;
+  }
+
+  .edu__body {
+    border-left: 1px solid var(--border);
+    padding-left: 1.5rem;
+    position: relative;
+  }
+
+  .edu__body::before {
+    content: '';
+    position: absolute;
+    left: -4.5px;
+    top: 0.6rem;
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--accent);
+    box-shadow: 0 0 0 4px var(--bg);
+  }
+
+  .edu__degree {
+    font-size: 1.05rem;
+  }
+
+  .edu__school {
+    margin-top: 0.15rem;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+  }
+
+  .edu__notes {
+    margin-top: 0.7rem;
+    padding-left: 1.05rem;
+    font-size: 0.9375rem;
+    color: var(--text-dim);
+  }
+
+  .edu__notes li::marker {
+    color: var(--text-muted);
+  }
+
+  @media (max-width: 41.99rem) {
+    .edu__item {
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+    }
+
+    .edu__when {
+      padding-top: 0;
+      padding-left: 1.5rem;
+    }
+  }
+</style>

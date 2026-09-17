@@ -1,0 +1,222 @@
+---
+import { nav, profile } from '../data/site';
+import Icon from './Icon.astro';
+import ThemeToggle from './ThemeToggle.astro';
+
+const path = Astro.url.pathname;
+const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
+---
+
+<header class="header">
+  <div class="wrap header__inner">
+    <a class="brand" href="/" aria-label={`${profile.name} — home`}>
+      <span class="brand__mark" aria-hidden="true">{profile.initials}</span>
+      <span class="brand__name">{profile.name}</span>
+    </a>
+
+    <nav class="nav" id="site-nav" aria-label="Main">
+      {
+        nav.map((item) => (
+          <a
+            class:list={['nav__link', { 'is-active': isActive(item.href) }]}
+            href={item.href}
+            aria-current={isActive(item.href) ? 'page' : undefined}
+          >
+            {item.label}
+          </a>
+        ))
+      }
+      <a class="nav__link nav__link--cv" href={profile.resume} target="_blank" rel="noopener">
+        Résumé
+      </a>
+    </nav>
+
+    <div class="header__actions">
+      <ThemeToggle />
+      <button class="burger" type="button" id="nav-toggle" aria-expanded="false" aria-controls="site-nav">
+        <Icon name="menu" size={20} class="burger__open" />
+        <Icon name="close" size={20} class="burger__close" />
+        <span class="sr-only">Toggle menu</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<style>
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: color-mix(in srgb, var(--bg) 78%, transparent);
+    backdrop-filter: saturate(180%) blur(14px);
+    -webkit-backdrop-filter: saturate(180%) blur(14px);
+    /* Promote the header to its own compositing layer. Without this, a sticky
+       element with a backdrop-filter can stop the page below it painting. */
+    transform: translateZ(0);
+    isolation: isolate;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s ease;
+  }
+
+  .header:global(.is-stuck) {
+    border-bottom-color: var(--border);
+  }
+
+  .header__inner {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    height: 3.75rem;
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    margin-right: auto;
+  }
+
+  .brand__mark {
+    display: grid;
+    place-items: center;
+    width: 1.85rem;
+    height: 1.85rem;
+    border-radius: 999px;
+    font-family: var(--font-code);
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: #05221d;
+    background: linear-gradient(140deg, var(--accent), color-mix(in srgb, var(--accent) 55%, #7aa2ff));
+  }
+
+  .brand__name {
+    white-space: nowrap;
+  }
+
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .nav__link {
+    padding: 0.4rem 0.7rem;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    border-radius: var(--radius-sm);
+    transition: color 0.15s ease, background 0.15s ease;
+  }
+
+  .nav__link:hover {
+    color: var(--text);
+    background: var(--surface);
+  }
+
+  .nav__link.is-active {
+    color: var(--text);
+  }
+
+  .nav__link--cv {
+    color: var(--accent-text);
+  }
+
+  .header__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .burger {
+    display: none;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    padding: 0;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+  }
+
+  .burger :global(.burger__close) {
+    display: none;
+  }
+
+  .burger[aria-expanded='true'] :global(.burger__close) {
+    display: block;
+  }
+
+  .burger[aria-expanded='true'] :global(.burger__open) {
+    display: none;
+  }
+
+  @media (max-width: 47.99rem) {
+    .burger {
+      display: grid;
+    }
+
+    .brand__name {
+      display: none;
+    }
+
+    .nav {
+      position: absolute;
+      inset: 3.75rem 0 auto;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+      padding: 0.5rem var(--gutter) 1rem;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      display: none;
+    }
+
+    .nav.is-open {
+      display: flex;
+    }
+
+    .nav__link {
+      padding: 0.7rem 0.25rem;
+      font-size: 1rem;
+      border-radius: 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav__link:hover {
+      background: transparent;
+    }
+  }
+</style>
+
+<script>
+  const toggle = document.getElementById('nav-toggle');
+  const menu = document.getElementById('site-nav');
+  const header = document.querySelector('.header');
+
+  toggle?.addEventListener('click', () => {
+    const open = menu?.classList.toggle('is-open');
+    toggle.setAttribute('aria-expanded', String(Boolean(open)));
+  });
+
+  // Close the mobile menu when a link is followed or the viewport widens.
+  menu?.addEventListener('click', (event) => {
+    if ((event.target as HTMLElement).closest('a')) {
+      menu.classList.remove('is-open');
+      toggle?.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  const observer = new IntersectionObserver(
+    ([entry]) => header?.classList.toggle('is-stuck', !entry.isIntersecting),
+    { rootMargin: '0px 0px -100% 0px' },
+  );
+
+  const sentinel = document.createElement('div');
+  document.body.prepend(sentinel);
+  observer.observe(sentinel);
+</script>

@@ -1,0 +1,72 @@
+---
+import Icon from './Icon.astro';
+---
+
+<button class="toggle" type="button" id="theme-toggle" aria-label="Switch colour theme">
+  <Icon name="sun" size={17} class="toggle__sun" />
+  <Icon name="moon" size={17} class="toggle__moon" />
+</button>
+
+<style>
+  .toggle {
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    padding: 0;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+  }
+
+  .toggle:hover {
+    color: var(--text);
+    background: var(--surface);
+    border-color: var(--border);
+  }
+
+  .toggle > :global(svg) {
+    grid-area: 1 / 1;
+    transition: opacity 0.2s ease, transform 0.25s ease;
+  }
+
+  .toggle :global(.toggle__sun) {
+    opacity: 0;
+    transform: rotate(-60deg) scale(0.6);
+  }
+
+  :global(:root[data-theme='light']) .toggle :global(.toggle__sun) {
+    opacity: 1;
+    transform: none;
+  }
+
+  :global(:root[data-theme='light']) .toggle :global(.toggle__moon) {
+    opacity: 0;
+    transform: rotate(60deg) scale(0.6);
+  }
+</style>
+
+<script>
+  const KEY = 'theme';
+
+  function apply(theme: 'light' | 'dark') {
+    document.documentElement.dataset.theme = theme;
+    document
+      .querySelector('meta[name="theme-color"]')
+      ?.setAttribute('content', theme === 'light' ? '#fbfbfa' : '#0a0d12');
+  }
+
+  document.getElementById('theme-toggle')?.addEventListener('click', () => {
+    const next = document.documentElement.dataset.theme === 'light' ? 'dark' : 'light';
+    localStorage.setItem(KEY, next);
+    apply(next);
+  });
+
+  // Follow the OS only while the visitor has not made an explicit choice.
+  window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', (event) => {
+    if (!localStorage.getItem(KEY)) apply(event.matches ? 'light' : 'dark');
+  });
+</script>

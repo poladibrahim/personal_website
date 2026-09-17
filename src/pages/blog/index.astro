@@ -1,0 +1,129 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import PostCard from '../../components/PostCard.astro';
+import { getPosts, getTags, tagSlug } from '../../lib/posts';
+
+const posts = await getPosts();
+const tags = await getTags();
+---
+
+<Base
+  title="Blog"
+  description="Notes on retrieval, embeddings, low-resource NLP and moving from Baku to Bonn."
+>
+  <div class="wrap wrap--narrow">
+    <PageHeader
+      eyebrow="Blog"
+      title="Writing"
+      lead="Notes on retrieval and embeddings, what breaks in production, and the occasional post about moving countries to study."
+    />
+
+    {
+      tags.length > 0 && (
+        <div class="filters" data-reveal>
+          <button class="filter is-active" type="button" data-filter="all">
+            All <span class="filter__count">{posts.length}</span>
+          </button>
+          {tags.map((tag) => (
+            <button class="filter" type="button" data-filter={tag.slug}>
+              {tag.tag} <span class="filter__count">{tag.count}</span>
+            </button>
+          ))}
+        </div>
+      )
+    }
+
+    <div class="posts" id="posts">
+      {
+        posts.map((post) => (
+          <div class="posts__item" data-tags={post.data.tags.map(tagSlug).join(' ')}>
+            <PostCard post={post} />
+          </div>
+        ))
+      }
+    </div>
+
+    <p class="empty" id="empty" hidden>No posts with that tag yet.</p>
+  </div>
+</Base>
+
+<style>
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 1.75rem;
+    padding-bottom: 1.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .filter {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.3rem 0.75rem;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    cursor: pointer;
+    transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+  }
+
+  .filter:hover {
+    color: var(--text);
+    border-color: var(--border-strong);
+  }
+
+  .filter.is-active {
+    color: var(--accent-text);
+    border-color: var(--accent-ring);
+    background: var(--accent-soft);
+  }
+
+  .filter__count {
+    font-family: var(--font-code);
+    font-size: 0.68rem;
+    opacity: 0.7;
+  }
+
+  .posts {
+    display: grid;
+    gap: 0.9rem;
+    margin-top: 1.75rem;
+  }
+
+  .posts__item[hidden] {
+    display: none;
+  }
+
+  .empty {
+    margin-top: 2rem;
+    color: var(--text-muted);
+    text-align: center;
+  }
+</style>
+
+<script>
+  const filters = document.querySelectorAll<HTMLButtonElement>('.filter');
+  const items = document.querySelectorAll<HTMLElement>('.posts__item');
+  const empty = document.getElementById('empty');
+
+  filters.forEach((button) => {
+    button.addEventListener('click', () => {
+      const wanted = button.dataset.filter ?? 'all';
+      filters.forEach((other) => other.classList.toggle('is-active', other === button));
+
+      let visible = 0;
+      items.forEach((item) => {
+        const match = wanted === 'all' || (item.dataset.tags ?? '').split(' ').includes(wanted);
+        item.hidden = !match;
+        if (match) visible += 1;
+      });
+
+      if (empty) empty.hidden = visible > 0;
+    });
+  });
+</script>

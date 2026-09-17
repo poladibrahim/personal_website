@@ -1,0 +1,143 @@
+---
+import type { Role } from '../data/site';
+
+interface Props {
+  items: Role[];
+}
+
+const { items } = Astro.props;
+
+// Minimal inline markdown: **bold** only, which is all the data file uses.
+const bold = (text: string) => text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+---
+
+<ol class="timeline">
+  {
+    items.map((item) => (
+      <li class="timeline__item">
+        <div class="timeline__when">
+          {item.start} — {item.end}
+        </div>
+        <div class="timeline__body">
+          <h3 class="timeline__title">{item.title}</h3>
+          <p class="timeline__org">
+            {item.org}
+            {item.location && <span class="timeline__sep"> · {item.location}</span>}
+            {item.note && <span class="timeline__note"> · {item.note}</span>}
+          </p>
+          <ul class="timeline__points">
+            {item.highlights.map((point) => (
+              <li set:html={bold(point)} />
+            ))}
+          </ul>
+          {item.stack && (
+            <ul class="tags timeline__stack">
+              {item.stack.map((tech) => (
+                <li class="tag">{tech}</li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </li>
+    ))
+  }
+</ol>
+
+<style>
+  .timeline {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 2.25rem;
+  }
+
+  .timeline__item {
+    display: grid;
+    grid-template-columns: 10.5rem 1fr;
+    gap: 1.5rem;
+    position: relative;
+  }
+
+  .timeline__when {
+    font-family: var(--font-code);
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    padding-top: 0.25rem;
+    white-space: nowrap;
+  }
+
+  .timeline__body {
+    border-left: 1px solid var(--border);
+    padding-left: 1.5rem;
+    position: relative;
+  }
+
+  .timeline__body::before {
+    content: '';
+    position: absolute;
+    left: -4.5px;
+    top: 0.6rem;
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--accent);
+    box-shadow: 0 0 0 4px var(--bg);
+  }
+
+  .timeline__title {
+    font-size: 1.05rem;
+  }
+
+  .timeline__org {
+    margin-top: 0.15rem;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+  }
+
+  .timeline__note {
+    font-style: italic;
+  }
+
+  .timeline__points {
+    margin-top: 0.8rem;
+    padding-left: 1.05rem;
+    font-size: 0.9375rem;
+    color: var(--text-dim);
+    line-height: 1.65;
+  }
+
+  .timeline__points li + li {
+    margin-top: 0.4rem;
+  }
+
+  .timeline__points li::marker {
+    color: var(--text-muted);
+  }
+
+  .timeline__points :global(strong) {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .timeline__stack {
+    margin-top: 0.9rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  @media (max-width: 41.99rem) {
+    .timeline__item {
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+    }
+
+    .timeline__when {
+      padding-top: 0;
+      padding-left: 1.5rem;
+    }
+
+    .timeline__body {
+      padding-top: 0.1rem;
+    }
+  }
+</style>

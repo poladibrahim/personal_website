@@ -1,0 +1,263 @@
+---
+import Base from '../layouts/Base.astro';
+import Avatar from '../components/Avatar.astro';
+import Icon from '../components/Icon.astro';
+import PostCard from '../components/PostCard.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import { profile, socials, projects, experience, education } from '../data/site';
+import { getPosts } from '../lib/posts';
+
+const posts = (await getPosts()).slice(0, 3);
+const featured = projects.filter((project) => project.featured).slice(0, 3);
+const current = experience[0];
+const degree = education[0];
+---
+
+<Base>
+  <section class="hero wrap">
+    <div class="hero__inner" data-reveal>
+      <Avatar />
+
+      <h1 class="hero__name">{profile.name}</h1>
+      <p class="hero__tagline">{profile.tagline}</p>
+      <p class="hero__bio">{profile.bio}</p>
+
+      <div class="hero__socials">
+        {
+          socials.map((item) => (
+            <a
+              class="hero__social"
+              href={item.href}
+              aria-label={item.label}
+              target={item.href.startsWith('mailto:') ? undefined : '_blank'}
+              rel="noopener"
+            >
+              <Icon name={item.icon} size={19} />
+            </a>
+          ))
+        }
+      </div>
+
+      <div class="hero__actions">
+        <a class="btn btn--primary" href="/contact/">
+          Get in touch <Icon name="arrow" size={16} />
+        </a>
+        <a class="btn" href={profile.resume} target="_blank" rel="noopener">
+          <Icon name="doc" size={16} /> Résumé
+        </a>
+      </div>
+
+      <p class="hero__status">
+        <span class="hero__dot" aria-hidden="true"></span>
+        {profile.available}
+      </p>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <section class="section" aria-labelledby="now">
+      <div class="section__head">
+        <h2 class="section__title" id="now">Now</h2>
+        <a class="section__link" href="/about/">More about me →</a>
+      </div>
+      <div class="now">
+        <div class="now__card">
+          <p class="eyebrow">Studying</p>
+          <p class="now__line">{degree.degree}</p>
+          <p class="now__sub">{degree.school} · {degree.start} — {degree.end}</p>
+        </div>
+        <div class="now__card">
+          <p class="eyebrow">Most recently</p>
+          <p class="now__line">{current.title}</p>
+          <p class="now__sub">{current.org} · {current.start} — {current.end}</p>
+        </div>
+        <div class="now__card">
+          <p class="eyebrow">Looking for</p>
+          <p class="now__line">Working student role</p>
+          <p class="now__sub">Up to 20 h/week in AI, ML or Data Science</p>
+        </div>
+      </div>
+    </section>
+
+    {
+      posts.length > 0 && (
+        <section class="section" aria-labelledby="writing">
+          <div class="section__head">
+            <h2 class="section__title" id="writing">
+              Recent writing
+            </h2>
+            <a class="section__link" href="/blog/">
+              All posts →
+            </a>
+          </div>
+          <div class="stack">
+            {posts.map((post) => (
+              <PostCard post={post} />
+            ))}
+          </div>
+        </section>
+      )
+    }
+
+    <section class="section" aria-labelledby="work">
+      <div class="section__head">
+        <h2 class="section__title" id="work">Selected work</h2>
+        <a class="section__link" href="/projects/">All projects →</a>
+      </div>
+      <div class="grid">
+        {featured.map((project) => <ProjectCard project={project} />)}
+      </div>
+    </section>
+
+    <section class="section cta" aria-labelledby="cta">
+      <h2 class="cta__title" id="cta">Let's build something</h2>
+      <p class="cta__text">
+        I'm looking for a working student position in AI, ML or Data Science around Bonn, Cologne or
+        remote. If that sounds like your team, I'd love to hear from you.
+      </p>
+      <a class="btn btn--primary" href={`mailto:${profile.email}`}>
+        <Icon name="mail" size={16} /> {profile.email}
+      </a>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .hero {
+    padding-top: clamp(3rem, 9vw, 5rem);
+  }
+
+  .hero__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    max-width: 42rem;
+    margin-inline: auto;
+  }
+
+  .hero__name {
+    margin-top: 1.5rem;
+    font-size: clamp(2.1rem, 7vw, 3.1rem);
+    letter-spacing: -0.04em;
+    font-weight: 700;
+  }
+
+  .hero__tagline {
+    margin-top: 0.5rem;
+    font-size: clamp(0.95rem, 2.4vw, 1.1rem);
+    color: var(--text-dim);
+  }
+
+  .hero__bio {
+    margin-top: 1.1rem;
+    color: var(--text-muted);
+    line-height: 1.75;
+  }
+
+  .hero__socials {
+    display: flex;
+    gap: 0.4rem;
+    margin-top: 1.4rem;
+  }
+
+  .hero__social {
+    display: grid;
+    place-items: center;
+    width: 2.4rem;
+    height: 2.4rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--text-muted);
+    transition: color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+  }
+
+  .hero__social:hover {
+    color: var(--accent-text);
+    border-color: var(--accent-ring);
+    transform: translateY(-2px);
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.6rem;
+    margin-top: 1.6rem;
+  }
+
+  .hero__status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1.6rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+
+  .hero__dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 999px;
+    background: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+  }
+
+  .now {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: 0.9rem;
+  }
+
+  .now__card {
+    padding: 1.1rem 1.2rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg-soft);
+  }
+
+  .now__line {
+    margin-top: 0.45rem;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+  }
+
+  .now__sub {
+    margin-top: 0.2rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+
+  .stack {
+    display: grid;
+    gap: 0.9rem;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+    gap: 0.9rem;
+  }
+
+  .cta {
+    text-align: center;
+    padding: 2.75rem 1.5rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background:
+      radial-gradient(ellipse at top, var(--accent-soft), transparent 65%),
+      var(--bg-soft);
+  }
+
+  .cta__title {
+    font-size: 1.5rem;
+    letter-spacing: -0.03em;
+  }
+
+  .cta__text {
+    max-width: 34rem;
+    margin: 0.7rem auto 1.4rem;
+    color: var(--text-muted);
+  }
+</style>

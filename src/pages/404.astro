@@ -1,0 +1,45 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+---
+
+<Base title="Page not found" noindex>
+  <div class="wrap wrap--narrow notfound">
+    <p class="eyebrow">404</p>
+    <h1 class="notfound__title">Nothing indexed here</h1>
+    <p class="notfound__text">
+      The page you were looking for doesn't exist — or it moved and I forgot to leave a redirect.
+    </p>
+    <div class="notfound__actions">
+      <a class="btn btn--primary" href="/">Go home <Icon name="arrow" size={16} /></a>
+      <a class="btn" href="/blog/">Read the blog</a>
+    </div>
+  </div>
+</Base>
+
+<style>
+  .notfound {
+    padding-top: 7rem;
+    text-align: center;
+  }
+
+  .notfound__title {
+    margin-top: 0.75rem;
+    font-size: clamp(1.9rem, 6vw, 2.6rem);
+    letter-spacing: -0.035em;
+  }
+
+  .notfound__text {
+    margin: 0.9rem auto 0;
+    max-width: 30rem;
+    color: var(--text-muted);
+  }
+
+  .notfound__actions {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 1.75rem;
+  }
+</style>

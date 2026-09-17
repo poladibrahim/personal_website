@@ -1,0 +1,251 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHeader from '../components/PageHeader.astro';
+import Icon from '../components/Icon.astro';
+import { profile, skills, languages, certifications, awards } from '../data/site';
+---
+
+<Base title="About" description={`About ${profile.name} — ${profile.summary}`}>
+  <div class="wrap wrap--narrow">
+    <PageHeader
+      eyebrow="About"
+      title="Hi, I'm Polad."
+      lead="I build systems that find the right document — usually in a language the big models were never really trained on."
+    />
+
+    <div class="prose" data-reveal>
+      <p>
+        I grew up in Baku and studied Computer Science at the <strong>French-Azerbaijani University
+        (UFAZ)</strong>, a dual-degree programme with the University of Strasbourg and Azerbaijan
+        State Oil and Industry University. I finished with a GPA of 98/100 — but the part that
+        actually shaped me was starting work before I graduated.
+      </p>
+
+      <p>
+        In June 2023 I joined Azerbaijan's <strong>National AI Center</strong> as an intern. I stayed
+        almost three years and left as a Middle AI Engineer. Most of that time went into <a
+          href="https://eqanun.ai"
+          rel="noopener">eqanun.ai</a
+        >, a legal AI assistant for Azerbaijani law: hybrid dense and lexical retrieval,
+        cross-encoder reranking, OCR pipelines for scanned legislation, and the Docker/Kubernetes
+        plumbing that keeps it all serving.
+      </p>
+
+      <p>
+        Working on a low-resource language teaches you things that a benchmark leaderboard never
+        will. There is no off-the-shelf embedding model that understands Azerbaijani legal text.
+        There is no clean corpus. Half the source documents are scans of scans, in multi-column
+        layouts, with tables that mean something. You end up building most of the stack yourself —
+        which is exactly why I enjoyed it.
+      </p>
+
+      <p>
+        Alongside the engineering I ran a research project under the Head of AI on domain-specific
+        embedding and reranking models for legal search. The results shipped into the E-qanun AI
+        platform and were written up as a technical paper.
+      </p>
+
+      <p>
+        In September 2025 I moved to Germany to start an <strong>M.Sc. in Computer Science at the
+        University of Bonn</strong>, admitted through a paper-based research contest on large
+        language models, with an Erasmus Mundus scholarship behind it. I'm now looking for a working
+        student role (up to 20 h/week) where I can keep shipping retrieval and NLP systems while I
+        study.
+      </p>
+
+      <p>
+        Outside of work I'm slowly grinding through German (A1 and climbing), and I have a soft spot
+        for problems that sit at the edge of two fields — like the quantum-inspired reinforcement
+        learning agent I prototyped for financial decision-making.
+      </p>
+    </div>
+
+    <section class="section" aria-labelledby="skills">
+      <div class="section__head">
+        <h2 class="section__title" id="skills">Skills</h2>
+      </div>
+      <dl class="skills">
+        {
+          skills.map((group) => (
+            <div class="skills__row">
+              <dt class="skills__label">{group.group}</dt>
+              <dd class="skills__items">
+                <ul class="tags">
+                  {group.items.map((item) => (
+                    <li class="tag">{item}</li>
+                  ))}
+                </ul>
+              </dd>
+            </div>
+          ))
+        }
+      </dl>
+    </section>
+
+    <section class="section" aria-labelledby="languages">
+      <div class="section__head">
+        <h2 class="section__title" id="languages">Languages</h2>
+      </div>
+      <ul class="langs">
+        {
+          languages.map((language) => (
+            <li class="langs__item">
+              <span class="langs__name">{language.name}</span>
+              <span class="langs__level">{language.level}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section class="section" aria-labelledby="awards">
+      <div class="section__head">
+        <h2 class="section__title" id="awards">Awards & scholarships</h2>
+      </div>
+      <ul class="awards">
+        {
+          awards.map((award) => (
+            <li class="awards__item">
+              <Icon name="sparkle" size={16} class="awards__icon" />
+              <div>
+                <p class="awards__title">
+                  {award.title} <span class="awards__year">· {award.year}</span>
+                </p>
+                {award.detail && <p class="awards__detail">{award.detail}</p>}
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section class="section" aria-labelledby="certs">
+      <div class="section__head">
+        <h2 class="section__title" id="certs">Certifications</h2>
+      </div>
+      <ul class="certs">
+        {certifications.map((certification) => <li>{certification}</li>)}
+      </ul>
+
+      <p class="closing">
+        The short version lives in my <a class="link-inline" href={profile.resume} target="_blank" rel="noopener">résumé</a>,
+        and the long version is on the <a class="link-inline" href="/blog/">blog</a>.
+      </p>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .skills {
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  .skills__row {
+    display: grid;
+    grid-template-columns: 9.5rem 1fr;
+    gap: 1rem;
+    align-items: start;
+  }
+
+  .skills__label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-dim);
+    padding-top: 0.15rem;
+  }
+
+  .skills__items {
+    margin: 0;
+  }
+
+  .skills__items ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .langs {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+    gap: 0.5rem;
+  }
+
+  .langs__item {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.55rem 0.9rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--bg-soft);
+    font-size: 0.9rem;
+  }
+
+  .langs__level {
+    font-family: var(--font-code);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  .awards {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 0.9rem;
+  }
+
+  .awards__item {
+    display: flex;
+    gap: 0.75rem;
+  }
+
+  :global(.awards__icon) {
+    flex: none;
+    margin-top: 0.35rem;
+    color: var(--accent);
+  }
+
+  .awards__title {
+    font-weight: 550;
+  }
+
+  .awards__year {
+    font-family: var(--font-code);
+    font-size: 0.78rem;
+    font-weight: 400;
+    color: var(--text-muted);
+  }
+
+  .awards__detail {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+  }
+
+  .certs {
+    padding-left: 1.1rem;
+    color: var(--text-dim);
+    font-size: 0.9375rem;
+  }
+
+  .certs li + li {
+    margin-top: 0.35rem;
+  }
+
+  .closing {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 0.9375rem;
+  }
+
+  @media (max-width: 35.99rem) {
+    .skills__row {
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+    }
+  }
+</style>

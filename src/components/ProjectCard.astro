@@ -1,0 +1,98 @@
+---
+import type { Project } from '../data/site';
+import Icon from './Icon.astro';
+
+interface Props {
+  project: Project;
+}
+
+const { project } = Astro.props;
+const link = project.href ?? project.repo;
+---
+
+<article class="project">
+  <header class="project__head">
+    {project.period && <p class="project__period">{project.period}</p>}
+    <h3 class="project__title">
+      {
+        link ? (
+          <a href={link} target="_blank" rel="noopener">
+            <span>{project.title}</span>
+            <Icon name="arrowUpRight" size={15} class="project__ext" />
+          </a>
+        ) : (
+          project.title
+        )
+      }
+    </h3>
+  </header>
+
+  <p class="project__blurb">{project.blurb}</p>
+
+  <ul class="tags project__tags">
+    {project.tags.map((tag) => <li class="tag">{tag}</li>)}
+  </ul>
+</article>
+
+<style>
+  .project {
+    padding: 1.4rem 1.45rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    transition: border-color 0.18s ease, background 0.18s ease, transform 0.18s ease;
+  }
+
+  .project:hover {
+    border-color: var(--border-strong);
+    background: var(--surface-hover);
+    transform: translateY(-2px);
+  }
+
+  .project__title {
+    margin-top: 0.3rem;
+    font-size: 1.0625rem;
+    letter-spacing: -0.015em;
+  }
+
+  .project__title a {
+    display: inline;
+    transition: color 0.15s ease;
+  }
+
+  .project__title a:hover {
+    color: var(--accent-text);
+  }
+
+  /* Keeps the arrow glued to the last word instead of orphaning it. */
+  :global(.project__ext) {
+    display: inline;
+    vertical-align: -2px;
+    margin-left: 0.25rem;
+    color: var(--text-muted);
+  }
+
+  .project__period {
+    font-family: var(--font-code);
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .project__blurb {
+    margin-top: 0.55rem;
+    font-size: 0.9375rem;
+    color: var(--text-muted);
+    line-height: 1.65;
+  }
+
+  .project__tags {
+    margin-top: 1rem;
+    padding: 0;
+    list-style: none;
+  }
+</style>

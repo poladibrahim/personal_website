@@ -1,0 +1,73 @@
+---
+import { profile, socials } from '../data/site';
+import Icon from './Icon.astro';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="wrap footer__inner">
+    <p class="footer__note">
+      © {year} {profile.name} · Built with <a class="link-inline" href="https://astro.build" rel="noopener">Astro</a>
+    </p>
+    <div class="footer__links">
+      {
+        socials.map((item) => (
+          <a
+            class="footer__icon"
+            href={item.href}
+            aria-label={item.label}
+            target={item.href.startsWith('mailto:') ? undefined : '_blank'}
+            rel="noopener"
+          >
+            <Icon name={item.icon} size={18} />
+          </a>
+        ))
+      }
+      <a class="footer__icon" href="/rss.xml" aria-label="RSS feed">
+        <Icon name="rss" size={18} />
+      </a>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    border-top: 1px solid var(--border);
+    padding-block: 1.75rem;
+    margin-top: auto;
+  }
+
+  .footer__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .footer__note {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+
+  .footer__links {
+    display: flex;
+    gap: 0.25rem;
+  }
+
+  .footer__icon {
+    display: grid;
+    place-items: center;
+    width: 2.1rem;
+    height: 2.1rem;
+    border-radius: 999px;
+    color: var(--text-muted);
+    transition: color 0.15s ease, background 0.15s ease;
+  }
+
+  .footer__icon:hover {
+    color: var(--accent-text);
+    background: var(--surface);
+  }
+</style>

@@ -1,0 +1,176 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHeader from '../components/PageHeader.astro';
+import Icon from '../components/Icon.astro';
+import { profile, socials } from '../data/site';
+---
+
+<Base
+  title="Contact"
+  description={`Get in touch with ${profile.name} — ${profile.available}`}
+>
+  <div class="wrap wrap--narrow">
+    <PageHeader
+      eyebrow="Contact"
+      title="Say hello"
+      lead="The fastest way to reach me is email. I read everything and reply to anything that isn't a cold sales pitch."
+    />
+
+    <div class="channels" data-reveal>
+      {
+        socials.map((item) => (
+          <a
+            class="channel"
+            href={item.href}
+            target={item.href.startsWith('mailto:') ? undefined : '_blank'}
+            rel="noopener"
+          >
+            <span class="channel__icon">
+              <Icon name={item.icon} size={19} />
+            </span>
+            <span class="channel__body">
+              <span class="channel__label">{item.label}</span>
+              <span class="channel__value">
+                {item.href.replace(/^mailto:/, '').replace(/^https?:\/\//, '')}
+              </span>
+            </span>
+            <Icon name="arrowUpRight" size={16} class="channel__go" />
+          </a>
+        ))
+      }
+    </div>
+
+    <section class="section">
+      <div class="facts">
+        <div class="facts__item">
+          <Icon name="pin" size={17} class="facts__icon" />
+          <div>
+            <p class="facts__label">Based in</p>
+            <p class="facts__value">{profile.location}</p>
+          </div>
+        </div>
+        <div class="facts__item">
+          <Icon name="calendar" size={17} class="facts__icon" />
+          <div>
+            <p class="facts__label">Availability</p>
+            <p class="facts__value">Up to 20 h/week alongside my MSc</p>
+          </div>
+        </div>
+        <div class="facts__item">
+          <Icon name="doc" size={17} class="facts__icon" />
+          <div>
+            <p class="facts__label">Résumé</p>
+            <p class="facts__value">
+              <a class="link-inline" href={profile.resume} target="_blank" rel="noopener">
+                Download the PDF
+              </a>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <p class="note">
+        If you're hiring for a working student or internship position in AI, ML, search or data —
+        in Bonn, Cologne, the wider NRW area, or remote — send me a line. A short description of the
+        problem your team is working on is more than enough to start.
+      </p>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .channels {
+    display: grid;
+    gap: 0.75rem;
+    margin-top: 2rem;
+  }
+
+  .channel {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 1rem 1.15rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    transition: border-color 0.18s ease, background 0.18s ease, transform 0.18s ease;
+  }
+
+  .channel:hover {
+    border-color: var(--accent-ring);
+    background: var(--surface-hover);
+    transform: translateY(-2px);
+  }
+
+  .channel__icon {
+    display: grid;
+    place-items: center;
+    width: 2.4rem;
+    height: 2.4rem;
+    flex: none;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: var(--accent-text);
+  }
+
+  .channel__body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .channel__label {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+
+  .channel__value {
+    font-size: 0.95rem;
+    font-weight: 550;
+    overflow-wrap: anywhere;
+  }
+
+  :global(.channel__go) {
+    margin-left: auto;
+    flex: none;
+    color: var(--text-muted);
+  }
+
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+    gap: 0.9rem;
+  }
+
+  .facts__item {
+    display: flex;
+    gap: 0.7rem;
+    padding: 1rem 1.1rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg-soft);
+  }
+
+  :global(.facts__icon) {
+    flex: none;
+    margin-top: 0.3rem;
+    color: var(--accent);
+  }
+
+  .facts__label {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+
+  .facts__value {
+    font-size: 0.9375rem;
+    font-weight: 550;
+  }
+
+  .note {
+    margin-top: 2rem;
+    color: var(--text-muted);
+    line-height: 1.75;
+  }
+</style>
